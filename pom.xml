@@ -16,7 +16,6 @@
 
     <properties>
         <querydsl.version>4.0.3</querydsl.version>
-        <querydsl-apt.version>3.7.2</querydsl-apt.version>
         <java.version>1.8</java.version>
     </properties>
 
@@ -28,6 +27,12 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <version>${querydsl.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.querydsl</groupId>
@@ -91,13 +96,6 @@
                         </configuration>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.querydsl</groupId>
-                        <artifactId>querydsl-apt</artifactId>
-                        <version>${querydsl-apt.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
