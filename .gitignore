@@ -1,2 +1,5 @@
 .idea/
 imagepop-ws.iml
+
+target/
+gs-actuator-service.iml
