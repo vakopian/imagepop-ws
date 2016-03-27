@@ -1,4 +1,4 @@
-package api.fileupload;
+package com.imagepop.fileupload;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class FileUploadController {
-    private final String API_PATH = "/api/fileupload/";
+    private final String API_PATH = "/com/imagepop/fileupload/";
     private final String FILE_UPLOAD_PATH = "/dev/null";
     private final AtomicLong fileId = new AtomicLong();
 
