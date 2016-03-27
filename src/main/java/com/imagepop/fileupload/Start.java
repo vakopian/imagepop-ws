@@ -1,4 +1,4 @@
-package api.fileupload;
+package com.imagepop.fileupload;
 
 /**
  * Created by ananth on 3/20/16.
