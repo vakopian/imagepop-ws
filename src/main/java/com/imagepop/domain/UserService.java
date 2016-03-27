@@ -1,4 +1,4 @@
-package api.useraccounts;
+package com.imagepop.domain;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;

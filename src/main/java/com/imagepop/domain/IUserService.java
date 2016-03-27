@@ -1,4 +1,4 @@
-package api.useraccounts;
+package com.imagepop.domain;
 
 /**
  * Created by BernardXie on 3/21/16.
