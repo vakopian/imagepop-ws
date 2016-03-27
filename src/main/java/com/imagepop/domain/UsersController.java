@@ -5,10 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.Valid;
@@ -26,8 +23,8 @@ public class UsersController {
 
     //Register New User
     @RequestMapping(value = API_PATH, method = RequestMethod.POST)
-    public @ResponseBody String registerUser(@ModelAttribute("user") @Valid User userInfo,
-                                                   BindingResult result, WebRequest request, Errors errors) {
+    public @ResponseBody String registerUser(@RequestBody User userInfo,
+                                             BindingResult result, WebRequest request, Errors errors) {
         User registered = new User();
         if(!result.hasErrors()) {
             try {
