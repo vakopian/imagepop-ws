@@ -2,4 +2,4 @@
 imagepop-ws.iml
 
 target/
-gs-actuator-service.iml
+*.iml
