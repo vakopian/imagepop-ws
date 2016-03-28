@@ -26,10 +26,16 @@ public class UserService implements IUserService{
         User account = new User();
         account.setFirstName(userInfo.getFirstName());
         account.setLastName(userInfo.getLastName());
+        account.setUserName(userInfo.getUserName());
         account.setEmail(userInfo.getEmail());
         account.setPassword(hashGenerator(userInfo.getPassword()));
 
-        return repo.save(account);
+        repo.save(account);
+
+        System.out.println(repo.findAll());
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        System.out.println(passwordEncoder.matches("12345", repo.findByEmail("bernardx@usc.edu").getPassword()));
+        return account;
     }
 
     private boolean emailExists(String email) {

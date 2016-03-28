@@ -43,8 +43,8 @@ public class User {
     @Override
     public String toString() {
         return String.format(
-                "User[id=%d, name='%s', email='%s']",
-                id, firstName, email);
+                "User[id=%d, name='%s', email='%s', password='%s]",
+                id, firstName, email, password);
     }
 
     public String getFirstName() {
