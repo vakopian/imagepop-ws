@@ -2,10 +2,7 @@ package com.imagepop.fileupload;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -18,6 +15,7 @@ public class FileUploadController {
     private final String FILE_UPLOAD_PATH = "/dev/null";
     private final AtomicLong fileId = new AtomicLong();
 
+    @CrossOrigin
     @RequestMapping(value = API_PATH + "start", method = RequestMethod.POST)
     public
     @ResponseBody
@@ -26,18 +24,19 @@ public class FileUploadController {
         // file number.
     }
 
+    @CrossOrigin
     @RequestMapping(value = API_PATH + "upload", method = RequestMethod.POST)
     public
     @ResponseBody
     UploadedFile handleFileUpload(@RequestParam("fileId") long fileId,
-                                  @RequestParam("file") MultipartFile file,
+                                  @RequestParam("image") MultipartFile image,
                                   RedirectAttributes redirectAttributes) {
-        String uploadPath = FILE_UPLOAD_PATH + "/" + file.getName() + fileId;
+        String uploadPath = FILE_UPLOAD_PATH + "/" + image.getName() + fileId;
         try {
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(uploadPath)));
-            FileCopyUtils.copy(file.getInputStream(), stream);
+            FileCopyUtils.copy(image.getInputStream(), stream);
             stream.close();
-            redirectAttributes.addFlashAttribute("message", "Success uploading file " + file.getName());
+            redirectAttributes.addFlashAttribute("message", "Success uploading file " + image.getName());
         } catch (IOException e) {
             e.printStackTrace();
         }
