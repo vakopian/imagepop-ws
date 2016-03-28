@@ -16,14 +16,14 @@ public class UserService implements IUserService{
 
     @Transactional
     @Override
-    public User registerNewUser(User user) throws EmailExistsException { //Figure out the DTO stuff
-        if (emailExists(user.getEmail())) {
-            throw new EmailExistsException("There is an account with the email address " + user.getEmail());
+    public User registerNewUser(User userInfo) throws EmailExistsException { //Figure out the DTO stuff
+        if (emailExists(userInfo.getEmail())) {
+            throw new EmailExistsException("There is an account with the email address " + userInfo.getEmail());
         }
         User account = new User();
-        account.setFirstName(user.getFirstName());
+        account.setFirstName(userInfo.getFirstName());
 
-        return repo.save(user);
+        return repo.save(account);
     }
 
     private boolean emailExists(String email) {
