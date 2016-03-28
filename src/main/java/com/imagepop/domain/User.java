@@ -1,5 +1,6 @@
 package com.imagepop.domain;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,13 +33,18 @@ public class User {
 
     public User(String name) {
         this.firstName = name;
+        this.lastName = "a";
+        this.userName = "a";
+        this.password = "a";
+        this.email = "a";
     }
+
 
     @Override
     public String toString() {
         return String.format(
-                "User[id=%d, name='%s']",
-                id, firstName);
+                "User[id=%d, name='%s', email='%s']",
+                id, firstName, email);
     }
 
     public String getFirstName() {

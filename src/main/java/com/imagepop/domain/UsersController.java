@@ -20,7 +20,7 @@ import javax.validation.Valid;
 @Controller
 public class UsersController {
     @Autowired
-    private IUserService service;
+    protected IUserService service;
 
     private final String API_PATH = "/api/users";
 
