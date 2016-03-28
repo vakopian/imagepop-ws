@@ -20,8 +20,14 @@ public class UserService implements IUserService{
         if (emailExists(userInfo.getEmail())) {
             throw new EmailExistsException("There is an account with the email address " + userInfo.getEmail());
         }
+        //userInfo.setPassword(hashGenerator(userInfo.getPassword());
+        //return repo.save(userInfo);
+
         User account = new User();
         account.setFirstName(userInfo.getFirstName());
+        account.setLastName(userInfo.getLastName());
+        account.setEmail(userInfo.getEmail());
+        account.setPassword(hashGenerator(userInfo.getPassword()));
 
         return repo.save(account);
     }
