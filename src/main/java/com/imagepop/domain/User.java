@@ -1,10 +1,8 @@
 package com.imagepop.domain;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -12,20 +10,15 @@ public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
-    @NotNull
-    @NotEmpty
+    @Column
     private String firstName;
-    @NotNull
-    @NotEmpty
+    @Column
     private String lastName;
-    @NotNull
-    @NotEmpty
+    @Column
     private String userName;
-    @NotNull
-    @NotEmpty
+    @Column
     private String password;
-    @NotNull
-    @NotEmpty
+    @Column
     private String email;
 
 
