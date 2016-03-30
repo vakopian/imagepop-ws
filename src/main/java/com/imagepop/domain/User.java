@@ -20,9 +20,6 @@ public class User {
     private String lastName;
     @NotNull
     @NotEmpty
-    private String userName;
-    @NotNull
-    @NotEmpty
     private String password;
     @NotNull
     @NotEmpty
@@ -34,7 +31,6 @@ public class User {
     public User(String name) {
         this.firstName = name;
         this.lastName = "a";
-        this.userName = "a";
         this.password = "a";
         this.email = "a";
     }
@@ -61,14 +57,6 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getPassword() {

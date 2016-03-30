@@ -20,22 +20,14 @@ public class UserService implements IUserService{
         if (emailExists(userInfo.getEmail())) {
             throw new EmailExistsException("There is an account with the email address " + userInfo.getEmail());
         }
-        //userInfo.setPassword(hashGenerator(userInfo.getPassword());
-        //return repo.save(userInfo);
-
-        User account = new User();
-        account.setFirstName(userInfo.getFirstName());
-        account.setLastName(userInfo.getLastName());
-        account.setUserName(userInfo.getUserName());
-        account.setEmail(userInfo.getEmail());
-        account.setPassword(hashGenerator(userInfo.getPassword()));
-
-        repo.save(account);
+        userInfo.setPassword(hashGenerator(userInfo.getPassword()));
+        repo.save(userInfo);
 
         System.out.println(repo.findAll());
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         System.out.println(passwordEncoder.matches("12345", repo.findByEmail("bernardx@usc.edu").getPassword()));
-        return account;
+
+        return userInfo;
     }
 
     private boolean emailExists(String email) {
