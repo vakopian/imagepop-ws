@@ -8,8 +8,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.validation.Valid;
-
 /**
  * Created by BernardXie on 3/20/16.
  */
@@ -17,7 +15,7 @@ import javax.validation.Valid;
 @Controller
 public class UsersController {
     @Autowired
-    protected IUserService service;
+    protected UserService service;
 
     private final String API_PATH = "/api/users";
 
@@ -27,11 +25,9 @@ public class UsersController {
                                              BindingResult result, WebRequest request, Errors errors) {
         User registered = new User();
         if(!result.hasErrors()) {
-            try {
-                registered = service.registerNewUser(userInfo);
-            } catch (EmailExistsException e) {
-                return "registrationform";
-            }
+
+            registered = service.registerNewUser(userInfo);
+
         }
         if (registered == null) {
             result.rejectValue("email", "message.regError");
