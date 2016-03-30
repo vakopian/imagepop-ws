@@ -13,7 +13,7 @@ import org.springframework.web.context.request.WebRequest;
  */
 
 @Controller
-public class UsersController {
+public class UserController {
     @Autowired
     protected UserService service;
 
@@ -21,22 +21,19 @@ public class UsersController {
 
     //Register New User
     @RequestMapping(value = API_PATH, method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String registerUser(@RequestBody User userInfo,
-                        BindingResult result, WebRequest request, Errors errors) {
+    public @ResponseBody String registerUser(@RequestBody User userInfo,
+                                             BindingResult result, WebRequest request, Errors errors) {
         User registered = new User();
-        if (!result.hasErrors()) {
-
+        if(!result.hasErrors()) {
             registered = service.registerNewUser(userInfo);
-
         }
         if (registered == null) {
             result.rejectValue("email", "message.regError");
         }
         if (result.hasErrors()) {
             return "registrationform";
-        } else {
+        }
+        else {
             return "registrationsuccess";
         }
     }
