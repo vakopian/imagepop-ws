@@ -4,6 +4,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.EnumSet;
+import java.util.HashSet;
 
 @Entity
 public class User {
@@ -23,7 +25,7 @@ public class User {
     @Column
     private String email;
     @Column
-    private Role role;
+    private EnumSet<Role> roles;
 
 
     protected User() {
@@ -80,11 +82,20 @@ public class User {
         this.id = id;
     }
 
-    public Role getRole() {
-        return role;
+    public EnumSet<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRoles(EnumSet<Role> roles) {
+        this.roles = roles;
     }
+
+    public void addRole (Role role) {
+        this.roles.add(role);
+    }
+
+    public boolean removeRole (Role role) {
+        return this.roles.remove(role);
+    }
+
 }
