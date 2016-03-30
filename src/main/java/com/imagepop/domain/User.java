@@ -7,6 +7,10 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 public class User {
+    public enum Role {
+        USER, ADMINISTRATOR
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -18,6 +22,8 @@ public class User {
     private String password;
     @Column
     private String email;
+    @Column
+    private Role role;
 
 
     protected User() {
@@ -72,5 +78,13 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
