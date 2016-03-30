@@ -15,8 +15,6 @@ public class User {
     @Column
     private String lastName;
     @Column
-    private String userName;
-    @Column
     private String password;
     @Column
     private String email;
@@ -27,7 +25,6 @@ public class User {
     public User(String name) {
         this.firstName = name;
         this.lastName = "a";
-        this.userName = "a";
         this.password = "a";
         this.email = "a";
     }
@@ -54,14 +51,6 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getPassword() {
