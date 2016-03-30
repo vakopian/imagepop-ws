@@ -23,10 +23,6 @@ public class UserServiceImpl implements UserService {
         userInfo.setPassword(hashGenerator(userInfo.getPassword()));
         repo.save(userInfo);
 
-        System.out.println(repo.findAll());
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        System.out.println(passwordEncoder.matches("12345", repo.findByEmail("bernardx@usc.edu").getPassword()));
-
         return userInfo;
     }
 
