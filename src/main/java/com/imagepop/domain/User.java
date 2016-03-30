@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @Column
     private String firstName;
@@ -20,7 +20,8 @@ public class User {
     private String email;
 
 
-    protected User() {}
+    protected User() {
+    }
 
     public User(String name) {
         this.firstName = name;

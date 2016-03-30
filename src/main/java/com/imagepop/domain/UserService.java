@@ -5,5 +5,5 @@ package com.imagepop.domain;
  */
 public interface UserService {
     User registerNewUser(User user)
-        throws EmailExistsException;
+            throws EmailExistsException;
 }

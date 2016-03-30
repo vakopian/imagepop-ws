@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
     private boolean emailExists(String email) {
         User user = repo.findByEmail(email);
-        if(user != null) {
+        if (user != null) {
             return true;
         }
         return false;

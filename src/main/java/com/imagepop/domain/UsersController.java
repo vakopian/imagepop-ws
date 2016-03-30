@@ -21,10 +21,12 @@ public class UsersController {
 
     //Register New User
     @RequestMapping(value = API_PATH, method = RequestMethod.POST)
-    public @ResponseBody String registerUser(@RequestBody User userInfo,
-                                             BindingResult result, WebRequest request, Errors errors) {
+    public
+    @ResponseBody
+    String registerUser(@RequestBody User userInfo,
+                        BindingResult result, WebRequest request, Errors errors) {
         User registered = new User();
-        if(!result.hasErrors()) {
+        if (!result.hasErrors()) {
 
             registered = service.registerNewUser(userInfo);
 
@@ -34,8 +36,7 @@ public class UsersController {
         }
         if (result.hasErrors()) {
             return "registrationform";
-        }
-        else {
+        } else {
             return "registrationsuccess";
         }
     }
