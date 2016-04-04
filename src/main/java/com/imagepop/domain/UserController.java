@@ -21,7 +21,8 @@ public class UserController {
 
     //Register New User
     @RequestMapping(value = API_PATH, method = RequestMethod.POST)
-    public @ResponseBody String registerUser(@RequestBody User userInfo,
+    @ResponseStatus
+    public @ResponseBody void registerUser(@RequestBody User userInfo,
                                              BindingResult result, WebRequest request, Errors errors) {
         User registered = new User();
         if(!result.hasErrors()) {
@@ -31,10 +32,7 @@ public class UserController {
             result.rejectValue("email", "message.regError");
         }
         if (result.hasErrors()) {
-            return "registrationform";
-        }
-        else {
-            return "registrationsuccess";
+            throw new ValidationErrorException("Validation Error inside controller");
         }
     }
 }
