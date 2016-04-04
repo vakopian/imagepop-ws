@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,6 +33,7 @@ public class ApplicationTests {
         for (int i = 0; i < names.size(); i++) {
             User newUser = new User(names.get(i));
             newUser.setId(i + 1);
+            newUser.setEmail(names.get(i) + "@imagepop.com");
             if (i == 0) {
                 singleUser.add(newUser);
             }
@@ -39,16 +41,16 @@ public class ApplicationTests {
             users.add(newUser);
         }
 
-        Assert.assertEquals(singleUser.toString(), this.repository.findByName("Jack").toString());
-
+        Assert.assertEquals(singleUser.toString(), this.repository.findByFirstName("Jack").toString());
+        Assert.assertEquals(singleUser.get(0).toString(), this.repository.findByEmail("Jack@imagepop.com").toString());
         Assert.assertEquals(users.toString(), this.repository.findAll().toString());
         Assert.assertEquals(users.get(0).toString(), this.repository.findOne(1L).toString());
 
     }
 
-	@Test
-	public void contextLoads() {
+    @Test
+    public void contextLoads() {
 
-	}
+    }
 
 }
