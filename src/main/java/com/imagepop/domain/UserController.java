@@ -1,6 +1,7 @@
 package com.imagepop.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
@@ -21,7 +22,7 @@ public class UserController {
 
     //Register New User
     @RequestMapping(value = API_PATH, method = RequestMethod.POST)
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.OK)
     public @ResponseBody void registerUser(@RequestBody User userInfo,
                                              BindingResult result, WebRequest request, Errors errors) {
         User registered = new User();
