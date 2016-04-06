@@ -21,7 +21,7 @@ public class UserController {
     private final String API_PATH = "/api/users";
 
     //Register New User
-    @RequestMapping(value = API_PATH, method = RequestMethod.POST)
+    @RequestMapping(value = API_PATH +"/register", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody void registerUser(@RequestBody User userInfo,
                                              BindingResult result, WebRequest request, Errors errors) {
@@ -35,5 +35,29 @@ public class UserController {
         if (result.hasErrors()) {
             throw new ValidationErrorException("Validation Error inside controller");
         }
+    }
+
+    //Login User
+    @RequestMapping(value = API_PATH+"/login", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody void loginUser(@RequestBody User userInfo,
+                                           BindingResult result, WebRequest request, Errors errors) {
+        User loggedIn = new User();
+        if(!result.hasErrors()) {
+            loggedIn = service.loginUser(userInfo);
+        }
+        if (loggedIn == null) {
+            result.rejectValue("email", "message.regError");
+        }
+        if (result.hasErrors()) {
+            throw new ValidationErrorException("Validation Error inside controller");
+        }
+    }
+
+    //Logout User
+    @RequestMapping(value = API_PATH+"/logout", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody void logoutUser() {
+        //TODO: logout current user once token system is in place
     }
 }
