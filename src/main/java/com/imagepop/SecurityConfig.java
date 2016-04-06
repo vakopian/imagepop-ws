@@ -37,6 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         // TODO Authenticate user and assign role here
-        // auth.inMemoryAuthentication().withUser("User").password("password").roles("USER");
+         auth.inMemoryAuthentication().withUser("Guest").password("password").roles("USER");
     }
 }
