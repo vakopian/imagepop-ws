@@ -45,7 +45,6 @@ public class ApplicationTests {
         Assert.assertEquals(singleUser.get(0).toString(), this.repository.findByEmail("Jack@imagepop.com").toString());
         Assert.assertEquals(users.toString(), this.repository.findAll().toString());
         Assert.assertEquals(users.get(0).toString(), this.repository.findOne(1L).toString());
-
     }
 
     @Test

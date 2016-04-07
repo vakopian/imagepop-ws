@@ -16,7 +16,7 @@ public class CurrentUserDetailService implements UserDetailsService {
     private UserRepository repository;
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+    public org.springframework.security.core.userdetails.User loadUserByUsername(String s) throws UsernameNotFoundException {
         User dbUser = repository.findByEmail(s);
         HashSet<SimpleGrantedAuthority> authorities = new HashSet<>();
         for (User.Role role: dbUser.getRoles()) {
