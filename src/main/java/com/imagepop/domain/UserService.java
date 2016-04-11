@@ -1,5 +1,7 @@
 package com.imagepop.domain;
 
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
@@ -8,4 +10,5 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public interface UserService {
     User registerNewUser(User user)
             throws EmailExistsException;
+    User loginUser(User user) throws BadCredentialsException, UsernameNotFoundException;
 }
