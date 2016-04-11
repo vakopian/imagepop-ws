@@ -1,21 +1,15 @@
 package com.imagepop;
 
 import com.imagepop.domain.CurrentUserDetailService;
-
 import org.jose4j.json.JsonUtil;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
-import org.jose4j.jwt.consumer.InvalidJwtException;
-import org.jose4j.jwt.consumer.JwtConsumer;
-import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.lang.JoseException;
 import org.springframework.security.core.userdetails.User;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 
