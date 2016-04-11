@@ -50,7 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("**/*.js").permitAll()
 
                 // Allow anonymous logins
-                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/api/users/login").permitAll()
+                .antMatchers("/api/users/register").permitAll()
 
                 // All other request need to be authenticated
                 .anyRequest().authenticated().and()
