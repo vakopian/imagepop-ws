@@ -2,6 +2,7 @@ package com.imagepop;
 
 import com.imagepop.domain.CurrentUserDetailService;
 import com.imagepop.domain.UserRepository;
+import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserRepository repo;
 
-    public SecurityConfig() {
+    public SecurityConfig() throws JoseException {
         super(true);
         this.userService = new CurrentUserDetailService();
         tokenAuthenticationService = new TokenAuthenticationService("tooManySecrets", userService);

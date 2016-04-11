@@ -1,6 +1,7 @@
 package com.imagepop;
 
 import com.imagepop.domain.CurrentUserDetailService;
+import org.jose4j.lang.JoseException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,13 +15,17 @@ public class TokenAuthenticationService {
 
     private final TokenHandler tokenHandler;
 
-    public TokenAuthenticationService(String secret, CurrentUserDetailService userService) {
+    public TokenAuthenticationService(String secret, CurrentUserDetailService userService) throws JoseException {
         tokenHandler = new TokenHandler(secret, userService);
     }
 
     public void addAuthentication(HttpServletResponse response, UserAuthentication authentication) {
         final User user = authentication.getDetails();
-        response.addHeader(AUTH_HEADER_NAME, tokenHandler.createTokenForUser(user));
+        try {
+            response.addHeader(AUTH_HEADER_NAME, tokenHandler.createTokenForUser(user));
+        } catch (JoseException e) {
+            System.out.println("Token could not be created: " +e);
+        }
     }
 
     public Authentication getAuthentication(HttpServletRequest request) {
