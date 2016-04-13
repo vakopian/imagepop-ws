@@ -51,20 +51,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
 
-                // Allow anonymous resource requests
-                .antMatchers("/").permitAll()
-                .antMatchers("/favicon.ico").permitAll()
-                .antMatchers("**/*.html").permitAll()
-                .antMatchers("**/*.css").permitAll()
-                .antMatchers("**/*.js").permitAll()
+                    // Allow anonymous resource requests
+                    .antMatchers("/").permitAll()
+                    .antMatchers("/favicon.ico").permitAll()
+                    .antMatchers("**/*.html").permitAll()
+                    .antMatchers("**/*.css").permitAll()
+                    .antMatchers("**/*.js").permitAll()
 
-                // Allow anonymous logins
-                .antMatchers("/api/users/register").permitAll()
+                    // Allow anonymous registrations
+                    .antMatchers("/api/users/register").permitAll()
 
                 // All other request need to be authenticated
                 .anyRequest().authenticated().and()
                 .formLogin()
                     .loginPage("/api/users/login")
+                    .usernameParameter("email")
                     .permitAll()
                     .successHandler(new SimpleUrlAuthenticationSuccessHandler() {
                         @Override
@@ -87,16 +88,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                 .csrf().disable();
 
-//                .authorizeRequests()
-//                .antMatchers("/", "/landing").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .formLogin()
-//                .loginPage("/login")
-//                .permitAll()
-//                .and()
-//                .logout()
-//                .permitAll();
     }
 
     public StatelessAuthenticationFilter statelessAuthenticationFilter() throws Exception {
