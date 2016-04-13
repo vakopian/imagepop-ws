@@ -1,8 +1,6 @@
 package com.imagepop;
 
-import com.imagepop.domain.CurrentUserDetailService;
-import com.imagepop.domain.UserRepository;
-import org.jose4j.lang.JoseException;
+import org.jose4j.json.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +10,26 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -23,21 +39,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final CurrentUserDetailService userService;
-    private final TokenAuthenticationService tokenAuthenticationService;
-
     @Autowired
-    private UserRepository repo;
-
-    public SecurityConfig() throws JoseException {
-        super(true);
-        this.userService = new CurrentUserDetailService();
-        tokenAuthenticationService = new TokenAuthenticationService("tooManySecrets", userService);
-    }
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private TokenHandler tokenHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        StatelessAuthenticationFilter statelessAuthenticationFilter = statelessAuthenticationFilter();
 
         http
                 .authorizeRequests()
@@ -50,21 +59,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("**/*.js").permitAll()
 
                 // Allow anonymous logins
-                .antMatchers("/api/users/login").permitAll()
                 .antMatchers("/api/users/register").permitAll()
 
                 // All other request need to be authenticated
                 .anyRequest().authenticated().and()
-
+                .formLogin()
+                    .loginPage("/api/users/login")
+                    .permitAll()
+                    .successHandler(new SimpleUrlAuthenticationSuccessHandler() {
+                        @Override
+                        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                            clearAuthenticationAttributes(request);
+                            statelessAuthenticationFilter.addAuthenticationInfoToResponse(response, (UserDetails) authentication.getPrincipal());
+                        }
+                    })
+                    .failureHandler(new SimpleUrlAuthenticationFailureHandler())
+                    .and()
+                .exceptionHandling()
+                    .authenticationEntryPoint(authenticationEntryPoint())
+                    .and()
                 // Custom Token based authentication based on the header previously given to the client
-                .addFilterBefore(new StatelessAuthenticationFilter(tokenAuthenticationService),
-                        UsernamePasswordAuthenticationFilter.class)
-
-                .csrf().disable()
-                .exceptionHandling().and()
-                .anonymous().and()
-                .servletApi().and()
-                .headers().cacheControl();
+                .addFilterBefore(statelessAuthenticationFilter, LogoutFilter.class)
+                .logout()
+                    .logoutSuccessHandler((request, response, authentication) -> {})
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .permitAll()
+                    .and()
+                .csrf().disable();
 
 //                .authorizeRequests()
 //                .antMatchers("/", "/landing").permitAll()
@@ -78,6 +99,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .permitAll();
     }
 
+    public StatelessAuthenticationFilter statelessAuthenticationFilter() throws Exception {
+        StatelessAuthenticationFilter statelessAuthenticationFilter = new StatelessAuthenticationFilter();
+        statelessAuthenticationFilter.setAuthenticationManager(authenticationManager());
+        statelessAuthenticationFilter.setTokenHandler(tokenHandler);
+        return statelessAuthenticationFilter;
+    }
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         // TODO Authenticate user and assign role here
@@ -86,23 +114,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService()).passwordEncoder(new BCryptPasswordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
+        PreAuthenticatedAuthenticationProvider preauthAuthProvider = new PreAuthenticatedAuthenticationProvider();
+        AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> userDetailsServiceWrapper = token -> (UserDetails) token.getPrincipal();
+        preauthAuthProvider.setPreAuthenticatedUserDetailsService(userDetailsServiceWrapper);
+        auth.authenticationProvider(preauthAuthProvider);
     }
 
+    private AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, failed) -> {
+            response.setHeader("location", "/api/users/login");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            Map<String, Object> res = new HashMap<>();
+            res.put("status", "error");
+            res.put("statusText", failed.getLocalizedMessage());
+            try (PrintWriter writer = response.getWriter()) {
+                JsonUtil.writeJson(res, writer);
+            }
+        };
+    }
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
-
-    @Bean
-    @Override
-    public CurrentUserDetailService userDetailsService() {
-        return userService;
-    }
-
-    @Bean
-    public TokenAuthenticationService tokenAuthenticationService() {
-        return tokenAuthenticationService;
     }
 }
