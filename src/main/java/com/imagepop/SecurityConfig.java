@@ -97,12 +97,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return statelessAuthenticationFilter;
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        // TODO Authenticate user and assign role here
-         auth.inMemoryAuthentication().withUser("Guest").password("password").roles("USER");
-    }
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
@@ -125,7 +119,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         };
     }
     @Bean
-    @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
