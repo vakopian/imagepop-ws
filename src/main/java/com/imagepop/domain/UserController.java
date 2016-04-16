@@ -21,6 +21,7 @@ public class UserController {
     private final String API_PATH = "/api/users";
 
     //Register New User
+    @CrossOrigin
     @RequestMapping(value = API_PATH +"/register", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody void registerUser(@RequestBody User userInfo,
@@ -38,6 +39,7 @@ public class UserController {
     }
 
     //Login User
+    @CrossOrigin
     @RequestMapping(value = API_PATH+"/login", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody void loginUser(@RequestBody User userInfo,
@@ -55,6 +57,7 @@ public class UserController {
     }
 
     //Logout User
+    @CrossOrigin
     @RequestMapping(value = API_PATH+"/logout", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody void logoutUser() {
