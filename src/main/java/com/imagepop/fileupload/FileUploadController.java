@@ -10,28 +10,41 @@ import java.io.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
+@RequestMapping(value = "/com/imagepop/fileupload/")
 public class FileUploadController {
-    private final String API_PATH = "/com/imagepop/fileupload/";
-    private final String FILE_UPLOAD_PATH = "/dev/null";
     private final AtomicLong fileId = new AtomicLong();
 
-    @CrossOrigin
-    @RequestMapping(value = API_PATH + "start", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    Start getFileId() {
-        return new Start(fileId.incrementAndGet()); // Currently just use a member variable to get the next available
-        // file number.
+    private String fileUploadPath;;
+
+    public FileUploadController() {
+        fileUploadPath = System.getProperty("user.dir") + "/uploads";
+        File uploadDir = new File(fileUploadPath);
+        if (!uploadDir.exists()) {
+            System.out.println("Creating uploads directory");
+            boolean success = uploadDir.mkdir();
+            if (!success) {
+                System.err.println("Unable to create upload directory");
+            }
+        }
     }
 
     @CrossOrigin
-    @RequestMapping(value = API_PATH + "upload", method = RequestMethod.POST)
+    @RequestMapping(value = "start", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Start getFileId() {
+        // Currently just use a member variable to get the next available file number
+        return new Start(fileId.incrementAndGet());
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "upload", method = RequestMethod.POST)
     public
     @ResponseBody
     UploadedFile handleFileUpload(@RequestParam("fileId") long fileId,
                                   @RequestParam("image") MultipartFile image,
                                   RedirectAttributes redirectAttributes) {
-        String uploadPath = FILE_UPLOAD_PATH + "/" + image.getName() + fileId;
+        String uploadPath = fileUploadPath + "/" + image.getName() + fileId;
         try {
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(uploadPath)));
             FileCopyUtils.copy(image.getInputStream(), stream);
