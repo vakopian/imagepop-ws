@@ -1,11 +1,8 @@
 package com.imagepop.domain;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.EnumSet;
-import java.util.HashSet;
+import java.util.Set;
+import java.util.LinkedHashSet;
 
 @Entity
 public class User {
@@ -14,7 +11,7 @@ public class User {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
     @Column
     private String firstName;
@@ -22,10 +19,11 @@ public class User {
     private String lastName;
     @Column
     private String password;
-    @Column
+    @Column(unique = true, nullable = false)
     private String email;
-    @Column
-    private EnumSet<Role> roles;
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new LinkedHashSet<>();
 
 
     protected User() {
@@ -33,9 +31,6 @@ public class User {
 
     public User(String name) {
         this.firstName = name;
-        this.lastName = "a";
-        this.password = "a";
-        this.email = "a";
     }
 
 
@@ -82,11 +77,11 @@ public class User {
         this.id = id;
     }
 
-    public EnumSet<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(EnumSet<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
