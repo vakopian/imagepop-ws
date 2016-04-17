@@ -1,9 +1,6 @@
 package com.imagepop.fileupload;
 
-import com.imagepop.domain.User;
-import org.springframework.stereotype.Service;
-
-import java.io.File;
+import java.util.List;
 
 /**
  * Created by matt on 4/16/16.
@@ -11,7 +8,7 @@ import java.io.File;
 
 public interface ImageService {
 
-    Image initializeNewImage(String email);
+    Image initializeNewImage(String email, String name);
 
     Image acceptFileUpload(String email, Long imageId, byte[] bytes);
 
@@ -22,5 +19,7 @@ public interface ImageService {
     String[] getPopped(Image image);
 
     String getEnhancement(Image image);
+
+    List<Image> getUserImages(String email);
 
 }

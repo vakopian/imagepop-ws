@@ -6,23 +6,27 @@ package com.imagepop.fileupload;
 class ImageResponse {
 
     private final long imageId;
+    private final String name;
     private final Image.Status status;
     private final String preview;
     private final String original;
     private final String[] popped;
     private final String enhancement;
+    private final int size;
 
-    ImageResponse(long imageId, Image.Status status, String preview, String original, String[] popped, String enhancement) {
+    ImageResponse(long imageId, String name, Image.Status status, String preview, String original, String[] popped, String enhancement, int size) {
         this.imageId = imageId;
+        this.name = name;
         this.status = status;
         this.preview = preview;
         this.original = original;
         this.popped = popped;
         this.enhancement = enhancement;
+        this.size = size;
     }
 
     public static ImageResponse fromImage(Image image, ImageService service) {
-        return new ImageResponse(image.getId(), image.getStatus(), service.getPreview(image), service.getUploaded(image), service.getPopped(image), service.getEnhancement(image));
+        return new ImageResponse(image.getId(), image.getName(), image.getStatus(), service.getPreview(image), service.getUploaded(image), service.getPopped(image), service.getEnhancement(image), image.getSize());
     }
 
     public long getImageId() {
@@ -47,5 +51,13 @@ class ImageResponse {
 
     public String getEnhancement() {
         return enhancement;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getSize() {
+        return size;
     }
 }

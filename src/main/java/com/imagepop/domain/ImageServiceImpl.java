@@ -1,7 +1,5 @@
 package com.imagepop.domain;
 
-import com.imagepop.domain.User;
-import com.imagepop.domain.UserRepository;
 import com.imagepop.fileupload.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +9,6 @@ import org.springframework.util.FileCopyUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
@@ -44,6 +41,7 @@ public class ImageServiceImpl implements ImageService {
         fileUploadPath = currentDir + "/uploads";
         previewPath = currentDir + "/previews";
         poppedPath = currentDir + "/popped";
+
         String[] paths = {fileUploadPath, previewPath, poppedPath};
         for (String path : paths) {
             File f = new File(path);
@@ -63,7 +61,9 @@ public class ImageServiceImpl implements ImageService {
         BufferedImage image = ImageIO.read(new File(getUploadPath(i)));
         double longestDim = Math.max(image.getWidth(), image.getHeight());
         double scale = longestScaledDim / longestDim;
-        BufferedImage thumbnail = new BufferedImage((int) (scale * image.getWidth()), (int) (scale * image.getHeight()), image.getType());
+        int scaledWidth = (int) Math.max(scale * image.getWidth(), 130);
+        int scaledHeight = (int) Math.max(scale * image.getHeight(), 130);
+        BufferedImage thumbnail = new BufferedImage(scaledWidth, scaledHeight, image.getType());
         Graphics2D g = thumbnail.createGraphics();
         AffineTransform scaleTransform = AffineTransform.getScaleInstance(scale, scale);
         g.drawImage(image, scaleTransform, null);
@@ -71,11 +71,11 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private String getUploadPath(com.imagepop.fileupload.Image image) {
-        return fileUploadPath + File.separator + image.getId();
+        return fileUploadPath + File.separator + image.getName() + image.getId();
     }
 
     private String getPreviewPath(com.imagepop.fileupload.Image image) {
-        return previewPath + File.separator + image.getId();
+        return previewPath + File.separator + image.getName() + image.getId();
     }
 
     public String getUploaded(com.imagepop.fileupload.Image image) {
@@ -108,7 +108,7 @@ public class ImageServiceImpl implements ImageService {
         if (image.getStatus() == com.imagepop.fileupload.Image.Status.POPPED) {
             try {
                 File poppedDir = new File(poppedPath + File.separator + image.getId() + File.separator);
-                List<String> images = new ArrayList<String>();
+                List<String> images = new ArrayList<>();
                 for (File f : poppedDir.listFiles()) {
                     if (!f.getName().equals(ENHANCEMENT_NAME)) {
                         images.add(imagePathToBase64(f.getAbsolutePath()));
@@ -139,10 +139,10 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public com.imagepop.fileupload.Image initializeNewImage(String email) {
+    public com.imagepop.fileupload.Image initializeNewImage(String email, String name) {
         User user = userRepo.findByEmail(email);
         if (user != null) {
-            com.imagepop.fileupload.Image image = new com.imagepop.fileupload.Image(user);
+            com.imagepop.fileupload.Image image = new com.imagepop.fileupload.Image(user, name, 0);
             imageRepo.save(image);
             return image;
         }
@@ -174,10 +174,21 @@ public class ImageServiceImpl implements ImageService {
                     }
                 }
                 image.setStatus(com.imagepop.fileupload.Image.Status.UPLOADED);
+                image.setSize(bytes.length);
                 // start poppping process
                 imageRepo.save(image);
                 return image;
             }
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public List<com.imagepop.fileupload.Image> getUserImages(String email) {
+        User user = userRepo.findByEmail(email);
+        if (user != null) {
+            return imageRepo.findByUser(user);
         }
         return null;
     }

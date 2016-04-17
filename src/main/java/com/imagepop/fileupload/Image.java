@@ -24,11 +24,20 @@ public class Image {
     @Column
     private Status status;
 
+    @Column
+    private String name;
+
+    @Column
+    private int size;
+
     protected Image() {
     }
 
-    public Image(User user) {
+    public Image(User user, String name, int size) {
         this.user = user;
+        this.size = size;
+        this.status = Status.NONE;
+        this.name = name;
     }
 
     @Override
@@ -59,4 +68,21 @@ public class Image {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
 }
