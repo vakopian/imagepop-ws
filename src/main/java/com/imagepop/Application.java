@@ -36,7 +36,11 @@ public class Application {
             user.setPassword("password");
             userService.registerNewUser(user);
 
-            Image image = new Image(user, "Doheny Library", 1251015);
+            Image image = new Image(user, "Chichen Itza", 2290650);
+            image.setStatus(Image.Status.POPPED);
+            imageRepo.save(image);
+
+            image = new Image(user, "Doheny Library", 1251015);
             image.setStatus(Image.Status.POPPED);
             imageRepo.save(image);
         };
