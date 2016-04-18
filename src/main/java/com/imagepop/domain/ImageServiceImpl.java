@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -109,7 +110,9 @@ public class ImageServiceImpl implements ImageService {
             try {
                 File poppedDir = new File(poppedPath + File.separator + image.getId() + File.separator);
                 List<String> images = new ArrayList<>();
-                for (File f : poppedDir.listFiles()) {
+                File[] files = poppedDir.listFiles();
+                Arrays.sort(files);
+                for (File f : files) {
                     if (!f.getName().equals(ENHANCEMENT_NAME)) {
                         images.add(imagePathToBase64(f.getAbsolutePath()));
                     }
