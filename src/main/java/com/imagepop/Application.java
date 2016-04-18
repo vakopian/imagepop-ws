@@ -1,6 +1,13 @@
 package com.imagepop;
 
 
+import com.imagepop.domain.User;
+import com.imagepop.domain.UserRepository;
+import com.imagepop.domain.UserService;
+import com.imagepop.fileupload.Image;
+import com.imagepop.fileupload.ImageRepository;
+import com.imagepop.fileupload.ImageService;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
@@ -20,6 +27,20 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
+    @Bean
+    public CommandLineRunner demo(UserService userService, ImageRepository imageRepo) {
+        return (args) -> {
+            User user = new User("Tommy");
+            user.setLastName("Trojan");
+            user.setEmail("ttrojan@usc.edu");
+            user.setPassword("password");
+            userService.registerNewUser(user);
+
+            Image image = new Image(user, "Doheny Library", 1251015);
+            image.setStatus(Image.Status.POPPED);
+            imageRepo.save(image);
+        };
+    }
     @Bean
     public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
