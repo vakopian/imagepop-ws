@@ -28,7 +28,8 @@ public class Application {
     @Bean
     public CommandLineRunner demo(UserService userService, ImageRepository imageRepo) {
         return (args) -> {
-            User user = new User("Tommy");
+            User user = new User();
+            user.setFirstName("Tommy");
             user.setLastName("Trojan");
             user.setEmail("ttrojan@usc.edu");
             user.setPassword("password");

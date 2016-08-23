@@ -25,15 +25,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new LinkedHashSet<>();
 
-
-    protected User() {
-    }
-
-    public User(String name) {
-        this.firstName = name;
-    }
-
-
     @Override
     public String toString() {
         return "User{" +

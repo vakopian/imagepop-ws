@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.AuthenticationUserDetailsSe
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -41,6 +42,7 @@ import java.util.Map;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
+    private static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Autowired
     private TokenHandler tokenHandler;
 
@@ -99,7 +101,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
         PreAuthenticatedAuthenticationProvider preauthAuthProvider = new PreAuthenticatedAuthenticationProvider();
         AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> userDetailsServiceWrapper = token -> (UserDetails) token.getPrincipal();
         preauthAuthProvider.setPreAuthenticatedUserDetailsService(userDetailsServiceWrapper);
@@ -122,5 +124,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        SecurityConfig.passwordEncoder = passwordEncoder;
+    }
+
+    public static String encode(String str) {
+        return passwordEncoder.encode(str);
+    }
+
+    public static boolean matches(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }
