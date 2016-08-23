@@ -1,6 +1,5 @@
 package com.imagepop;
 
-import org.jose4j.json.JsonUtil;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -18,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
-import java.util.Map;
 
 @Component
 public final class TokenHandler {

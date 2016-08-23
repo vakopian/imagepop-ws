@@ -1,8 +1,8 @@
 package com.imagepop.domain;
 
 import javax.persistence.*;
-import java.util.Set;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -36,9 +36,12 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format(
-                "User[id=%d, name='%s', email='%s', password='%s]",
-                id, firstName, email, password);
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 
     public String getFirstName() {
@@ -85,11 +88,11 @@ public class User {
         this.roles = roles;
     }
 
-    public void addRole (Role role) {
+    public void addRole(Role role) {
         this.roles.add(role);
     }
 
-    public boolean removeRole (Role role) {
+    public boolean removeRole(Role role) {
         return this.roles.remove(role);
     }
 

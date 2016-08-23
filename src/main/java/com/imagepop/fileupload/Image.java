@@ -42,7 +42,13 @@ public class Image {
 
     @Override
     public String toString() {
-        return String.format("Image[id=%d, user=%s]", id, user.toString());
+        return "Image{" +
+                "id=" + id +
+                ", user=" + user +
+                ", status=" + status +
+                ", name='" + name + '\'' +
+                ", size=" + size +
+                '}';
     }
 
     public Long getId() {

@@ -21,7 +21,8 @@ public class FileUploadController {
 
     @CrossOrigin
     @RequestMapping(value = "start", method = RequestMethod.POST)
-    public @ResponseBody ImageResponse startFileUpload(@RequestParam("name") String name) throws Exception {
+    @ResponseBody
+    public ImageResponse startFileUpload(@RequestParam("name") String name) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.isAuthenticated()) {
             Image image = service.initializeNewImage(((CurrentUser) auth.getPrincipal()).getUsername(), name);
@@ -34,10 +35,8 @@ public class FileUploadController {
 
     @CrossOrigin
     @RequestMapping(value = "upload", method = RequestMethod.POST)
-    public @ResponseBody
-    ImageResponse handleFileUpload(@RequestParam("imageId") long imageId,
-                                   @RequestParam("image") MultipartFile image,
-                                   RedirectAttributes redirectAttributes) throws Exception {
+    @ResponseBody
+    public ImageResponse handleFileUpload(@RequestParam("imageId") long imageId, @RequestParam("image") MultipartFile image, RedirectAttributes redirectAttributes) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.isAuthenticated()) {
             Image img = service.acceptFileUpload(((CurrentUser) auth.getPrincipal()).getUsername(), imageId, image.getBytes());
@@ -51,8 +50,8 @@ public class FileUploadController {
 
     @CrossOrigin
     @RequestMapping(value = "get_images", method = RequestMethod.POST)
-    public @ResponseBody
-    List<ImageResponse> getUserImages() throws Exception {
+    @ResponseBody
+    public List<ImageResponse> getUserImages() throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.isAuthenticated()) {
             List<Image> images = service.getUserImages(((CurrentUser) auth.getPrincipal()).getUsername());
