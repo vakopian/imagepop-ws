@@ -1,54 +1,65 @@
 package com.imagepop;
 
-import org.jose4j.json.JsonUtil;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedCredentialsNotFoundException;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 
-public class StatelessAuthenticationFilter extends RequestHeaderAuthenticationFilter {
-    public static final String AUTH_HEADER_NAME = "X-AUTH-TOKEN";
+public class StatelessAuthenticationFilter extends AbstractPreAuthenticatedProcessingFilter {
+    private static final String TOKEN_COOKIE_NAME = "access_token";
     private TokenHandler tokenHandler;
-
-    public StatelessAuthenticationFilter() {
-        setPrincipalRequestHeader(AUTH_HEADER_NAME);
-        setExceptionIfHeaderMissing(false);
-    }
+    private boolean exceptionIfCookieMissing = false;
+    private boolean tokenCookieSecure = false;
+    private int tokenCookieMaxAge = -1;
 
     public void setTokenHandler(TokenHandler tokenHandler) {
         this.tokenHandler = tokenHandler;
     }
 
+    public void setExceptionIfCookieMissing(boolean exceptionIfCookieMissing) {
+        this.exceptionIfCookieMissing = exceptionIfCookieMissing;
+    }
+
+    public void setTokenCookieSecure(boolean tokenCookieSecure) {
+        this.tokenCookieSecure = tokenCookieSecure;
+    }
+
+    public void setTokenCookieMaxAge(int tokenCookieMaxAge) {
+        this.tokenCookieMaxAge = tokenCookieMaxAge;
+    }
+
     @Override
     protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
-        String token = (String) super.getPreAuthenticatedPrincipal(request);
+        String token = null;
+        for (Cookie cookie : request.getCookies()) {
+            if (TOKEN_COOKIE_NAME.equals(cookie.getName())) {
+                token = cookie.getValue();
+                break;
+            }
+        }
         if (token == null) {
+            if (exceptionIfCookieMissing) {
+                throw new PreAuthenticatedCredentialsNotFoundException("could not find cookie named '" + TOKEN_COOKIE_NAME + "' in request.");
+            }
             return null;
         }
-        return tokenHandler.parseUserFromToken(token);
+        return tokenHandler.getAuthentication(token);
+    }
+
+    @Override
+    protected Object getPreAuthenticatedCredentials(HttpServletRequest request) {
+        return "N/A";
     }
 
     public void addAuthenticationInfoToResponse(HttpServletResponse response, UserDetails user) {
-        String token = tokenHandler.createTokenForUser(user);
-        response.addHeader(AUTH_HEADER_NAME, token);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding("utf-8");
-        response.addHeader(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, max-age=0, must-revalidate");
-        response.addHeader(HttpHeaders.PRAGMA, "no-cache");
-        response.addHeader(HttpHeaders.EXPIRES, "0");
-        Map<String, Object> res = new HashMap<>();
-        res.put("token", token);
-        try (PrintWriter writer = response.getWriter()) {
-            JsonUtil.writeJson(res, writer);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        String token = tokenHandler.createToken(user);
+        Cookie cookie = new Cookie(TOKEN_COOKIE_NAME, token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(tokenCookieSecure);
+        cookie.setMaxAge(tokenCookieMaxAge);
+        response.addCookie(cookie);
     }
 }

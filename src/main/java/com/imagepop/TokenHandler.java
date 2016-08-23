@@ -31,7 +31,7 @@ public final class TokenHandler {
     @Autowired
     protected UserDetailsService userService;
 
-    public UserDetails parseUserFromToken(String token) {
+    public UserDetails getAuthentication(String token) {
         try {
             HmacKey key = getKey();
             JwtConsumer jwtConsumer = new JwtConsumerBuilder()
@@ -50,7 +50,7 @@ public final class TokenHandler {
         }
     }
 
-    public String createTokenForUser(UserDetails user) {
+    public String createToken(UserDetails user) {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(issuer);
         claims.setAudience(audience);
